@@ -117,6 +117,16 @@
       font-size: 11px;
       color: #5f6368;
     }
+    .author a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+    .filter-item[title] .filter-name {
+      cursor: pointer;
+    }
+    .author a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -137,7 +147,10 @@
 
   <div class="filter-list" id="filterList"></div>
 
-  <div class="author">Author: Brodie Carter (bman013)</div>
+  <div class="author">
+    Version <span id="extensionVersion"></span>
+    · Author: Brodie Carter (<a href="https://github.com/bman013" target="_blank" rel="noopener noreferrer">bman013</a>)
+  </div>
 
   <script src="defaults.js"></script>
   <script src="popup.js"></script>

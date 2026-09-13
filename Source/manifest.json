@@ -1,9 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Gmail Filter Buttons",
-  "version": "1.4",
-  "author": "Brodie Carter (bman013)",
-  "description": "Add custom filter buttons to Gmail that run saved search queries.",
+  "version": "1.5.0",
+  "version_name": "1.5.0",
+  "author": "Brodie Carter",
+  "homepage_url": "https://github.com/bman013/Gmail-Filter-Buttons",
+  "description": "Pin your favorite Gmail searches to an Additional Filters menu in the toolbar. Toggle built-in views or add your own.",
   "icons": {
     "16": "icon-16.png",
     "48": "icon-48.png",

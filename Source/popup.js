@@ -23,6 +23,10 @@ function renderFilterItem(filter, index) {
   querySpan.textContent = filter.query;
   info.appendChild(nameSpan);
   info.appendChild(querySpan);
+  const description = getFilterDescription(filter);
+  if (description) {
+    info.title = description;
+  }
   info.addEventListener("click", () => {
     nameInput.value = filter.name;
     queryInput.value = filter.query;
@@ -83,10 +87,7 @@ function withFilters(mutator) {
 }
 
 function saveFilters(filters) {
-  const next = sortFilters(filters);
-  chrome.storage.sync.set({ filters: next, defaultsVersion: DEFAULTS_VERSION }, () => {
-    renderFilters(next);
-  });
+  persistFilterState(sortFilters(filters), renderFilters);
 }
 
 function loadFilters() {
@@ -143,4 +144,7 @@ nameInput.addEventListener("keydown", (event) => {
 queryInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") addOrUpdateFilter();
 });
+const versionEl = document.getElementById("extensionVersion");
+if (versionEl) versionEl.textContent = EXTENSION_VERSION;
+
 loadFilters();
