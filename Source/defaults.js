@@ -7,16 +7,23 @@ const DEFAULT_FILTERS = [
     group: "standard"
   },
   {
-    name: "Unread + Important",
-    query: "is:unread is:important",
-    enabled: false,
+    name: "Today",
+    query: "newer_than:1d",
+    enabled: true,
     builtin: true,
     group: "standard"
   },
   {
-    name: "Starred",
-    query: "is:starred",
-    enabled: false,
+    name: "This Week",
+    query: "newer_than:7d",
+    enabled: true,
+    builtin: true,
+    group: "standard"
+  },
+  {
+    name: "User Labels",
+    query: "has:userlabels in:inbox",
+    enabled: true,
     builtin: true,
     group: "standard"
   },
@@ -63,27 +70,6 @@ const DEFAULT_FILTERS = [
     group: "standard"
   },
   {
-    name: "Today",
-    query: "newer_than:1d",
-    enabled: true,
-    builtin: true,
-    group: "standard"
-  },
-  {
-    name: "This Week",
-    query: "newer_than:7d",
-    enabled: true,
-    builtin: true,
-    group: "standard"
-  },
-  {
-    name: "User Labels",
-    query: "has:userlabels in:inbox",
-    enabled: true,
-    builtin: true,
-    group: "standard"
-  },
-  {
     name: "Unread in Labels",
     query: "has:userlabels is:unread",
     enabled: false,
@@ -107,13 +93,6 @@ const DEFAULT_FILTERS = [
   {
     name: "Muted Threads",
     query: "is:muted",
-    enabled: false,
-    builtin: true,
-    group: "power"
-  },
-  {
-    name: "Drafts Needing Attention",
-    query: "in:drafts",
     enabled: false,
     builtin: true,
     group: "power"
@@ -169,11 +148,28 @@ const DEFAULT_FILTERS = [
   }
 ];
 
-const DEFAULTS_VERSION = 2;
+const DEFAULTS_VERSION = 3;
+
+const REMOVED_FILTERS = new Set([
+  "Unread + Important",
+  "Starred",
+  "Drafts Needing Attention"
+]);
+
+const GROUP_ORDER = { custom: 0, standard: 1, power: 2 };
+
+function sortFilters(filters) {
+  return [...filters].sort((a, b) => {
+    if (!!a.enabled !== !!b.enabled) return a.enabled ? -1 : 1;
+    return (GROUP_ORDER[a.group] ?? 9) - (GROUP_ORDER[b.group] ?? 9);
+  });
+}
 
 function mergeWithDefaults(stored, options) {
   const resetBuiltinEnabled = !!(options && options.resetBuiltinEnabled);
-  const filters = Array.isArray(stored) ? stored.map((filter) => ({ ...filter })) : [];
+  const filters = (Array.isArray(stored) ? stored : [])
+    .filter((filter) => filter && !REMOVED_FILTERS.has(filter.name))
+    .map((filter) => ({ ...filter }));
   const byName = new Map(filters.map((filter) => [filter.name, filter]));
 
   DEFAULT_FILTERS.forEach((def) => {
@@ -202,7 +198,7 @@ function mergeWithDefaults(stored, options) {
     }
   });
 
-  return filters;
+  return sortFilters(filters);
 }
 
 function getEnabledFilters(filters) {

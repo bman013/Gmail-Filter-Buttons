@@ -4,10 +4,20 @@
   <meta charset="UTF-8" />
   <title>Gmail Filters</title>
   <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      overflow: hidden;
+      overflow-x: hidden;
+      width: 380px;
+    }
     body {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      max-height: 560px;
+      padding: 16px 20px;
       font-family: "Google Sans", Roboto, Arial, sans-serif;
-      margin: 12px;
-      width: 320px;
       color: #202124;
     }
     h3 {
@@ -17,32 +27,32 @@
     .hint {
       font-size: 11px;
       color: #5f6368;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     label {
       display: block;
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 12px;
     }
     input[type="text"] {
       width: 100%;
       box-sizing: border-box;
-      margin-top: 2px;
-      padding: 6px 8px;
+      margin-top: 4px;
+      padding: 8px 10px;
     }
     #addFilter {
-      margin-top: 10px;
+      margin-top: 12px;
       width: 100%;
-      padding: 7px 8px;
+      padding: 8px 10px;
       cursor: pointer;
     }
     .filter-list {
-      margin-top: 12px;
-      max-height: 380px;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
       overflow-y: auto;
-    }
-    .filter-section {
-      margin-top: 12px;
+      margin-top: 14px;
+      padding-right: 4px;
     }
     .filter-section-title {
       font-size: 11px;
@@ -50,16 +60,19 @@
       text-transform: uppercase;
       letter-spacing: 0.03em;
       color: #5f6368;
-      margin-bottom: 4px;
+      margin: 12px 0 6px;
+    }
+    .filter-section-title:first-child {
+      margin-top: 0;
     }
     .filter-item {
       font-size: 12px;
-      padding: 6px 0;
+      padding: 8px 4px;
       border-bottom: 1px solid #eee;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 8px;
+      gap: 12px;
     }
     .filter-info {
       min-width: 0;
@@ -76,8 +89,9 @@
     .filter-actions {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       flex-shrink: 0;
+      padding-top: 2px;
     }
     .delete-btn {
       font-size: 11px;
@@ -90,13 +104,15 @@
     .toggle {
       display: inline-flex;
       align-items: center;
+      padding: 2px;
     }
     .toggle input {
       margin: 0;
     }
     .author {
+      flex-shrink: 0;
       margin-top: 12px;
-      padding-top: 8px;
+      padding-top: 10px;
       border-top: 1px solid #eee;
       font-size: 11px;
       color: #5f6368;
