@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Gmail Filters</title>
+  <style>
+    body { font-family: sans-serif; margin: 10px; width: 260px; }
+    label { display: block; margin-top: 8px; font-size: 12px; }
+    input { width: 100%; box-sizing: border-box; margin-top: 2px; }
+    button { margin-top: 10px; width: 100%; }
+    .filter-list { margin-top: 12px; max-height: 200px; overflow-y: auto; }
+    .filter-item { font-size: 12px; padding: 4px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .filter-name { font-weight: 600; }
+    .filter-query { color: #555; }
+    .delete-btn { font-size: 11px; color: #c00; cursor: pointer; border: none; background: none; padding: 0 4px; }
+  </style>
+</head>
+<body>
+  <h3>Gmail Filter Buttons</h3>
+
+  <label>
+    Button label
+    <input id="filterName" placeholder="e.g. User Labels" />
+  </label>
+
+  <label>
+    Gmail search query
+    <input id="filterQuery" placeholder="e.g. has:userlabels in:inbox" />
+  </label>
+
+  <button id="addFilter">Add / Update Filter</button>
+
+  <div class="filter-list" id="filterList"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
