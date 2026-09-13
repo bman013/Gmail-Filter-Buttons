@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Gmail Filter Buttons",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Add custom filter buttons to Gmail that run saved search queries.",
   "icons": {
     "16": "icon-16.png",
@@ -23,7 +23,7 @@
   "content_scripts": [
     {
       "matches": ["https://mail.google.com/*"],
-      "js": ["content.js"],
+      "js": ["defaults.js", "content.js"],
       "css": ["styles.css"],
       "run_at": "document_idle"
     }

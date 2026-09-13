@@ -4,34 +4,117 @@
   <meta charset="UTF-8" />
   <title>Gmail Filters</title>
   <style>
-    body { font-family: sans-serif; margin: 10px; width: 260px; }
-    label { display: block; margin-top: 8px; font-size: 12px; }
-    input { width: 100%; box-sizing: border-box; margin-top: 2px; }
-    button { margin-top: 10px; width: 100%; }
-    .filter-list { margin-top: 12px; max-height: 200px; overflow-y: auto; }
-    .filter-item { font-size: 12px; padding: 4px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-    .filter-name { font-weight: 600; }
-    .filter-query { color: #555; }
-    .delete-btn { font-size: 11px; color: #c00; cursor: pointer; border: none; background: none; padding: 0 4px; }
+    body {
+      font-family: "Google Sans", Roboto, Arial, sans-serif;
+      margin: 12px;
+      width: 320px;
+      color: #202124;
+    }
+    h3 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+    .hint {
+      font-size: 11px;
+      color: #5f6368;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 2px;
+      padding: 6px 8px;
+    }
+    #addFilter {
+      margin-top: 10px;
+      width: 100%;
+      padding: 7px 8px;
+      cursor: pointer;
+    }
+    .filter-list {
+      margin-top: 12px;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+    .filter-section {
+      margin-top: 12px;
+    }
+    .filter-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #5f6368;
+      margin-bottom: 4px;
+    }
+    .filter-item {
+      font-size: 12px;
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .filter-info {
+      min-width: 0;
+      flex: 1;
+      cursor: pointer;
+    }
+    .filter-name {
+      font-weight: 600;
+    }
+    .filter-query {
+      color: #5f6368;
+      word-break: break-word;
+    }
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .delete-btn {
+      font-size: 11px;
+      color: #c00;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0 4px;
+    }
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+    }
+    .toggle input {
+      margin: 0;
+    }
   </style>
 </head>
 <body>
   <h3>Gmail Filter Buttons</h3>
+  <div class="hint">Turn filters on to show them in Gmail’s toolbar. Up to 4 stay as buttons; the rest move into a More menu.</div>
 
   <label>
     Button label
-    <input id="filterName" placeholder="e.g. User Labels" />
+    <input id="filterName" type="text" placeholder="e.g. User Labels" />
   </label>
 
   <label>
     Gmail search query
-    <input id="filterQuery" placeholder="e.g. has:userlabels in:inbox" />
+    <input id="filterQuery" type="text" placeholder="e.g. has:userlabels in:inbox" />
   </label>
 
   <button id="addFilter">Add / Update Filter</button>
 
   <div class="filter-list" id="filterList"></div>
 
+  <script src="defaults.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
