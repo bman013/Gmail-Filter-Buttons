@@ -18,10 +18,56 @@ function applyFilter(query) {
   location.assign(nextUrl);
 }
 
+function isVisible(el) {
+  if (!el) return false;
+  const rect = el.getBoundingClientRect();
+  const style = window.getComputedStyle(el);
+  return rect.width > 8 &&
+    rect.height > 8 &&
+    style.visibility !== "hidden" &&
+    style.display !== "none";
+}
+
+function findToolbarRoot() {
+  const nodes = [
+    ...document.querySelectorAll('div[gh="tm"]'),
+    ...document.querySelectorAll('div[gh="mtb"]'),
+    ...document.querySelectorAll("div.G-atb")
+  ];
+
+  const visible = nodes.filter(isVisible);
+  if (!visible.length) return null;
+
+  visible.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  return visible[0];
+}
+
 function findToolbarHost() {
-  const toolbar = document.querySelector('div[gh="tm"]') || document.querySelector('div[gh="mtb"]');
-  if (!toolbar) return null;
-  return toolbar.querySelector(".G-tF") || toolbar;
+  const root = findToolbarRoot();
+  if (!root) return null;
+
+  const inner = [...root.querySelectorAll(".G-tF")].find((el) => {
+    const rect = el.getBoundingClientRect();
+    return isVisible(el) && rect.height > 20 && rect.height < 80;
+  });
+
+  return inner || root;
+}
+
+function findIconCluster(host) {
+  const refresh = host.querySelector('[act="20"], [data-tooltip="Refresh"], [aria-label="Refresh"]');
+  if (refresh && refresh.parentElement) return refresh.parentElement;
+
+  const more = host.querySelector('[act="22"], [data-tooltip="More"], [aria-label="More"]');
+  if (more && more.parentElement) return more.parentElement;
+
+  const icons = [...host.querySelectorAll(".T-I")];
+  if (icons.length) return icons[0].parentElement;
+
+  const groups = [...host.querySelectorAll(":scope > .G-Ni")].filter((group) => {
+    return !group.querySelector(".ar5") && !group.classList.contains("G-aE");
+  });
+  return groups[1] || groups[0] || null;
 }
 
 function closeFilterMenu() {
@@ -107,6 +153,12 @@ function createAddonDropdown(filters) {
 }
 
 function insertBar(host, bar) {
+  const cluster = findIconCluster(host);
+  if (cluster) {
+    cluster.appendChild(bar);
+    return;
+  }
+
   const pagination = host.querySelector(".ar5") ||
     host.querySelector('[aria-label*="Newer"]') ||
     host.querySelector('[data-tooltip*="Newer"]');
@@ -116,17 +168,16 @@ function insertBar(host, bar) {
     return;
   }
 
-  const groups = host.querySelectorAll(":scope > .G-Ni");
-  if (groups.length >= 2) {
-    groups[1].after(bar);
-    return;
-  }
-  if (groups[0]) {
-    groups[0].after(bar);
-    return;
-  }
-
   host.appendChild(bar);
+}
+
+function isBarInToolbar() {
+  const host = findToolbarHost();
+  const bar = document.querySelector(`.${FILTER_BAR_CLASS}`);
+  if (!host || !bar || !host.contains(bar) || !isVisible(bar)) return false;
+
+  const ref = host.querySelector(".T-I") || host.querySelector(".G-Ni") || host;
+  return Math.abs(bar.getBoundingClientRect().top - ref.getBoundingClientRect().top) <= 18;
 }
 
 function renderFilterBar(filters) {
@@ -140,14 +191,13 @@ function renderFilterBar(filters) {
   if (!enabled.length) return true;
 
   const bar = document.createElement("div");
-  bar.className = `G-Ni ${FILTER_BAR_CLASS}`;
+  bar.className = FILTER_BAR_CLASS;
   bar.appendChild(createAddonDropdown(enabled));
   insertBar(host, bar);
   return true;
 }
 
 let cachedFilters = null;
-let defaultsSeeded = false;
 
 function loadAndRender() {
   if (cachedFilters) {
@@ -155,24 +205,26 @@ function loadAndRender() {
     return;
   }
 
-  chrome.storage.sync.get({ filters: [] }, (data) => {
-    const filters = mergeWithDefaults(data.filters || []);
+  readManagedFilters((filters) => {
     cachedFilters = filters;
     renderFilterBar(filters);
-
-    if (!defaultsSeeded) {
-      defaultsSeeded = true;
-      chrome.storage.sync.set({ filters });
-    }
   });
 }
 
 function tryRender() {
   if (!findToolbarHost()) return;
-  if (document.querySelector(`div[gh="tm"] .${FILTER_BAR_CLASS}, div[gh="mtb"] .${FILTER_BAR_CLASS}`)) {
-    return;
-  }
+  if (isBarInToolbar()) return;
   loadAndRender();
+}
+
+let renderScheduled = false;
+function scheduleTryRender() {
+  if (renderScheduled) return;
+  renderScheduled = true;
+  requestAnimationFrame(() => {
+    renderScheduled = false;
+    tryRender();
+  });
 }
 
 document.addEventListener("click", (event) => {
@@ -185,6 +237,8 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("resize", closeFilterMenu);
+window.addEventListener("hashchange", () => scheduleTryRender());
+window.addEventListener("popstate", () => scheduleTryRender());
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "sync" || !changes.filters) return;
@@ -193,7 +247,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
 });
 
 const observer = new MutationObserver(() => {
-  tryRender();
+  scheduleTryRender();
 });
 
 observer.observe(document.documentElement, {

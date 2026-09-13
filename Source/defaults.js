@@ -9,14 +9,14 @@ const DEFAULT_FILTERS = [
   {
     name: "Unread + Important",
     query: "is:unread is:important",
-    enabled: true,
+    enabled: false,
     builtin: true,
     group: "standard"
   },
   {
     name: "Starred",
     query: "is:starred",
-    enabled: true,
+    enabled: false,
     builtin: true,
     group: "standard"
   },
@@ -72,14 +72,14 @@ const DEFAULT_FILTERS = [
   {
     name: "This Week",
     query: "newer_than:7d",
-    enabled: false,
+    enabled: true,
     builtin: true,
     group: "standard"
   },
   {
     name: "User Labels",
     query: "has:userlabels in:inbox",
-    enabled: false,
+    enabled: true,
     builtin: true,
     group: "standard"
   },
@@ -169,7 +169,10 @@ const DEFAULT_FILTERS = [
   }
 ];
 
-function mergeWithDefaults(stored) {
+const DEFAULTS_VERSION = 2;
+
+function mergeWithDefaults(stored, options) {
+  const resetBuiltinEnabled = !!(options && options.resetBuiltinEnabled);
   const filters = Array.isArray(stored) ? stored.map((filter) => ({ ...filter })) : [];
   const byName = new Map(filters.map((filter) => [filter.name, filter]));
 
@@ -182,8 +185,8 @@ function mergeWithDefaults(stored) {
 
     existing.builtin = true;
     existing.group = existing.group || def.group;
-    if (typeof existing.enabled !== "boolean") {
-      existing.enabled = true;
+    if (resetBuiltinEnabled || typeof existing.enabled !== "boolean") {
+      existing.enabled = def.enabled;
     }
     if (!existing.query) {
       existing.query = def.query;
@@ -204,4 +207,16 @@ function mergeWithDefaults(stored) {
 
 function getEnabledFilters(filters) {
   return (filters || []).filter((filter) => filter && filter.enabled && filter.query);
+}
+
+function readManagedFilters(callback) {
+  chrome.storage.sync.get({ filters: [], defaultsVersion: 0 }, (data) => {
+    const resetBuiltinEnabled = data.defaultsVersion !== DEFAULTS_VERSION;
+    const filters = mergeWithDefaults(data.filters || [], { resetBuiltinEnabled });
+    if (resetBuiltinEnabled) {
+      chrome.storage.sync.set({ filters, defaultsVersion: DEFAULTS_VERSION }, () => callback(filters));
+      return;
+    }
+    callback(filters);
+  });
 }

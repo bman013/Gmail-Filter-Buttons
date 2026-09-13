@@ -75,21 +75,18 @@ function renderFilters(filters) {
 }
 
 function withFilters(mutator) {
-  chrome.storage.sync.get({ filters: [] }, (data) => {
-    const filters = mergeWithDefaults(data.filters || []);
-    mutator(filters);
-  });
+  readManagedFilters((filters) => mutator(filters));
 }
 
 function saveFilters(filters) {
-  chrome.storage.sync.set({ filters }, () => {
+  chrome.storage.sync.set({ filters, defaultsVersion: DEFAULTS_VERSION }, () => {
     renderFilters(filters);
   });
 }
 
 function loadFilters() {
-  withFilters((filters) => {
-    saveFilters(filters);
+  readManagedFilters((filters) => {
+    renderFilters(filters);
   });
 }
 

@@ -1,10 +1,14 @@
 .gmail-filter-buttons-bar {
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   flex: 0 0 auto;
   align-self: center;
-  margin-left: 8px;
+  margin-left: 10px;
   vertical-align: middle;
+  float: none !important;
+  position: static !important;
+  height: 28px;
+  line-height: 28px;
 }
 
 .gmail-filter-addon-wrap {
@@ -17,7 +21,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 32px;
+  height: 28px;
   padding: 0 12px 0 10px;
   border: 1px solid #1a73e8;
   border-radius: 16px;
