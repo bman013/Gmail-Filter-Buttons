@@ -94,11 +94,18 @@
     .toggle input {
       margin: 0;
     }
+    .author {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+      font-size: 11px;
+      color: #5f6368;
+    }
   </style>
 </head>
 <body>
   <h3>Gmail Filter Buttons</h3>
-  <div class="hint">Turn filters on to show them in Gmail’s toolbar. Up to 4 stay as buttons; the rest move into a More menu.</div>
+  <div class="hint">Turn filters on to show them under Additional Filters in Gmail’s toolbar.</div>
 
   <label>
     Button label
@@ -113,6 +120,8 @@
   <button id="addFilter">Add / Update Filter</button>
 
   <div class="filter-list" id="filterList"></div>
+
+  <div class="author">Author: Brodie Carter (bman013)</div>
 
   <script src="defaults.js"></script>
   <script src="popup.js"></script>

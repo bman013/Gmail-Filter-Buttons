@@ -1,7 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Gmail Filter Buttons",
-  "version": "1.1",
+  "version": "1.2",
+  "author": "Brodie Carter (bman013)",
   "description": "Add custom filter buttons to Gmail that run saved search queries.",
   "icons": {
     "16": "icon-16.png",

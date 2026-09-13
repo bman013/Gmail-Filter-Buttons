@@ -1,5 +1,4 @@
 const FILTER_BAR_CLASS = "gmail-filter-buttons-bar";
-const MAX_INLINE_BUTTONS = 4;
 
 function getAccountIndex() {
   const match = location.pathname.match(/\/mail\/u\/(\d+)/);
@@ -29,41 +28,45 @@ function closeFilterMenu() {
   document.querySelectorAll(".gmail-filter-menu").forEach((menu) => {
     menu.hidden = true;
   });
+  document.querySelectorAll(".gmail-filter-addon-btn").forEach((btn) => {
+    btn.setAttribute("aria-expanded", "false");
+  });
 }
 
 function positionMenu(menu, anchor) {
   const rect = anchor.getBoundingClientRect();
-  const menuWidth = Math.max(220, menu.offsetWidth);
+  const menuWidth = Math.max(240, menu.offsetWidth);
   const left = Math.min(rect.left, window.innerWidth - menuWidth - 8);
-  menu.style.top = `${Math.round(rect.bottom + 4)}px`;
+  menu.style.top = `${Math.round(rect.bottom + 6)}px`;
   menu.style.left = `${Math.max(8, Math.round(left))}px`;
 }
 
-function createFilterButton(filter, extraClass) {
+function createAddonDropdown(filters) {
+  const wrap = document.createElement("div");
+  wrap.className = "gmail-filter-addon-wrap";
+
   const btn = document.createElement("button");
   btn.type = "button";
-  btn.className = extraClass ? `gmail-filter-button ${extraClass}` : "gmail-filter-button";
-  btn.textContent = filter.name;
-  btn.title = filter.query;
-  btn.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    closeFilterMenu();
-    applyFilter(filter.query);
-  });
-  return btn;
-}
+  btn.className = "gmail-filter-addon-btn";
+  btn.setAttribute("aria-haspopup", "true");
+  btn.setAttribute("aria-expanded", "false");
+  btn.title = "Gmail Filter Buttons";
 
-function createOverflowMenu(filters) {
-  const wrap = document.createElement("div");
-  wrap.className = "gmail-filter-more-wrap";
+  const icon = document.createElement("span");
+  icon.className = "gmail-filter-addon-icon";
+  icon.setAttribute("aria-hidden", "true");
 
-  const moreBtn = document.createElement("button");
-  moreBtn.type = "button";
-  moreBtn.className = "gmail-filter-button gmail-filter-more-btn";
-  moreBtn.textContent = "More";
-  moreBtn.setAttribute("aria-haspopup", "true");
-  moreBtn.setAttribute("aria-expanded", "false");
+  const label = document.createElement("span");
+  label.className = "gmail-filter-addon-label";
+  label.textContent = "Additional Filters";
+
+  const caret = document.createElement("span");
+  caret.className = "gmail-filter-addon-caret";
+  caret.setAttribute("aria-hidden", "true");
+
+  btn.appendChild(icon);
+  btn.appendChild(label);
+  btn.appendChild(caret);
 
   const menu = document.createElement("div");
   menu.className = "gmail-filter-menu";
@@ -86,21 +89,19 @@ function createOverflowMenu(filters) {
     menu.appendChild(item);
   });
 
-  moreBtn.addEventListener("click", (event) => {
+  btn.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
     const willOpen = menu.hidden;
     closeFilterMenu();
     if (willOpen) {
       menu.hidden = false;
-      moreBtn.setAttribute("aria-expanded", "true");
-      positionMenu(menu, moreBtn);
-    } else {
-      moreBtn.setAttribute("aria-expanded", "false");
+      btn.setAttribute("aria-expanded", "true");
+      positionMenu(menu, btn);
     }
   });
 
-  wrap.appendChild(moreBtn);
+  wrap.appendChild(btn);
   wrap.appendChild(menu);
   return wrap;
 }
@@ -129,28 +130,18 @@ function insertBar(host, bar) {
 }
 
 function renderFilterBar(filters) {
+  document.querySelectorAll(`.${FILTER_BAR_CLASS}`).forEach((el) => el.remove());
+  closeFilterMenu();
+
   const host = findToolbarHost();
   if (!host) return false;
-
-  const existing = host.querySelector(`.${FILTER_BAR_CLASS}`);
-  if (existing) existing.remove();
-  closeFilterMenu();
 
   const enabled = getEnabledFilters(filters);
   if (!enabled.length) return true;
 
   const bar = document.createElement("div");
-  bar.className = FILTER_BAR_CLASS;
-
-  if (enabled.length <= MAX_INLINE_BUTTONS) {
-    enabled.forEach((filter) => bar.appendChild(createFilterButton(filter)));
-  } else {
-    enabled.slice(0, MAX_INLINE_BUTTONS - 1).forEach((filter) => {
-      bar.appendChild(createFilterButton(filter));
-    });
-    bar.appendChild(createOverflowMenu(enabled.slice(MAX_INLINE_BUTTONS - 1)));
-  }
-
+  bar.className = `G-Ni ${FILTER_BAR_CLASS}`;
+  bar.appendChild(createAddonDropdown(enabled));
   insertBar(host, bar);
   return true;
 }
@@ -185,7 +176,7 @@ function tryRender() {
 }
 
 document.addEventListener("click", (event) => {
-  if (event.target.closest(".gmail-filter-more-wrap")) return;
+  if (event.target.closest(".gmail-filter-addon-wrap")) return;
   closeFilterMenu();
 });
 
