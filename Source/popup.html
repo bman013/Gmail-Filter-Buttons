@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Gmail Filters</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      overflow: hidden;
+      overflow-x: hidden;
+      width: 380px;
+    }
+    body {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      max-height: 560px;
+      padding: 16px 20px;
+      font-family: "Google Sans", Roboto, Arial, sans-serif;
+      color: #202124;
+    }
+    h3 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+    .hint {
+      font-size: 11px;
+      color: #5f6368;
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 4px;
+      padding: 8px 10px;
+    }
+    #addFilter {
+      margin-top: 12px;
+      width: 100%;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+    .filter-list {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      margin-top: 14px;
+      padding-right: 4px;
+    }
+    .filter-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #5f6368;
+      margin: 12px 0 6px;
+    }
+    .filter-section-title:first-child {
+      margin-top: 0;
+    }
+    .filter-item {
+      font-size: 12px;
+      padding: 8px 4px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .filter-info {
+      min-width: 0;
+      flex: 1;
+      cursor: pointer;
+    }
+    .filter-name {
+      font-weight: 600;
+    }
+    .filter-query {
+      color: #5f6368;
+      word-break: break-word;
+    }
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .delete-btn {
+      font-size: 11px;
+      color: #c00;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0 4px;
+    }
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
+    }
+    .toggle input {
+      margin: 0;
+    }
+    .author {
+      flex-shrink: 0;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+      font-size: 11px;
+      color: #5f6368;
+    }
+    .author a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+    .filter-item[title] .filter-name {
+      cursor: pointer;
+    }
+    .author a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h3>Gmail Filter Buttons</h3>
+  <div class="hint">Turn filters on to show them under Additional Filters in Gmail’s toolbar.</div>
+
+  <label>
+    Button label
+    <input id="filterName" type="text" placeholder="e.g. User Labels" />
+  </label>
+
+  <label>
+    Gmail search query
+    <input id="filterQuery" type="text" placeholder="e.g. has:userlabels in:inbox" />
+  </label>
+
+  <button id="addFilter">Add / Update Filter</button>
+
+  <div class="filter-list" id="filterList"></div>
+
+  <div class="author">
+    Version <span id="extensionVersion"></span>
+    · Author: Brodie Carter (<a href="https://github.com/bman013" target="_blank" rel="noopener noreferrer">bman013</a>)
+  </div>
+
+  <script src="defaults.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
