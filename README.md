@@ -4,7 +4,7 @@ A Chrome extension that adds an **Additional Filters** menu to the Gmail toolbar
 
 Author: [Brodie Carter](https://github.com/bman013) ([bman013](https://github.com/bman013))
 
-**Current release:** 1.5.0 · **Filter catalog:** 2.0.0
+**Current release:** [1.5.0](CHANGELOG.md) · **Filter catalog:** 2.0.0
 
 ---
 
@@ -122,14 +122,16 @@ Older installs that only had an integer `defaultsVersion` are treated as `0.x.0`
 
 ### Release history
 
+See [CHANGELOG.md](CHANGELOG.md) for the full list.
+
 | Version | Notes |
 | --- | --- |
-| 1.5.0 | Semver for the extension and filter catalog; README and store listing |
-| 1.4.0 | Single popup scrollbar; enabled filters listed first; removed unused built-ins |
-| 1.3.0 | Keep the toolbar button aligned after Gmail search |
-| 1.2.0 | Single Additional Filters dropdown; author credit |
-| 1.1.0 | Built-in filters and on/off toggles |
-| 1.0.0 | Initial Manifest V3 scaffold |
+| [1.5.0](CHANGELOG.md#150---2026-09-22) | Semver, docs, and Chrome Web Store listing |
+| [1.4.0](CHANGELOG.md#140---2026-09-13) | Popup cleanup; default enabled set |
+| [1.3.0](CHANGELOG.md#130---2026-09-13) | Toolbar placement after Gmail search |
+| [1.2.0](CHANGELOG.md#120---2026-09-13) | Additional Filters dropdown |
+| [1.1.0](CHANGELOG.md#110---2026-09-13) | Built-in filters and on/off toggles |
+| [1.0.0](CHANGELOG.md#100---2026-09-13) | Initial Manifest V3 scaffold |
 
 ---
 
